@@ -1,0 +1,26 @@
+﻿Deliverable 2: Project Proposal: 
+Jeanette Cook 
+Introduction: 
+ 
+* Background Information: I am interested in how clouds vary with latitude and longitude. The data set starts on August 29th, 2023, and it has every day since then. I think that this is interesting because I want to see how time has affected the cloud patterns. Cloud patterns are related to the weather as they affect the Earth’s temperature, weather, and water cycle by either reflecting sunlight to cool the earth or trapping heat to warm it. They influence the climate by transporting water globally through precipitation, affecting vegetation and erosion. 
+* Purpose of the Project: With this project, I want to find the correlation between cloud patterns and the latitude and longitude of the earth. I want to see if time has affected the cloud patterns around the Earth. Studying cloud patterns can provide insight into climate feedback loops. Cloud patterns have a significant impact on the climate, and heat trapping clouds can amplify the effects of climate change. Global warming can affect cloud patterns, but I want to see if there are other reasons for the cloud patterns. 
+* Significance: Cloud patterns influence the weather which directly affects the outdoor environment and everything that lives outside. Cloud patterns can have a direct influence on more animals than just humans. Cloud patterns can influence the habitats of different species. 
+Objectives: 
+* Primary Objective: I want to sort my data and see if cloud patterns have changed around the Earth over time. I want to see if the global climate affect cloud patterns, and I want to use the cloud pattern data to predict future cloud patterns around Earth. 
+* Secondary Objectives: I want to see how cloud patterns have affected plants and animals. I want to see how weather and cloud patterns affect the weather, and thus how they affect everything else on Earth. 
+Methodology: 
+* Approach: I plan to make graphs between the cloud patterns and the latitude and longitude. Because the patterns are not number values, I plan to assign a number value to a type of pattern, like 1- cloud, 2- partially cloudy, 3- sunny, that kind of thing. I would be interested in seeing what temperatures are associated with the latitude and longitude, but I don’t know if I will be able to find all of that data. 
+* Tools and Resources: I will use the data that I found on Kaggle, as well as the weather data that I can find online. I plan to sort and present my data with R studio and excel. 
+* Timeline: Time when my proposal gets approved -October 19th. First week of October Sorting my data and getting it ready for processing, the next week I am going to make the summary and statistics and find the overall dimensions of my data. The week after that I am going to find the details for the cleanliness of my data, and then I am going to write the discussion. 
+October 19th – November 16th. Work on final report of all the data. 
+ 
+Expected Outcomes 
+* Deliverables: At the end of all my research I plan to have a presentation with my data sorted, and all my graphs. I want to present my outside research on the topic as well and see if my data supports it. 
+* Success Criteria: I will consider my project successful if I am able to meet all my objectives and meet all the expectations of deliverable 3. 
+ 
+Challenges: 
+* Potential Challenges: I might have problems because the cloud patterns are words, and not numbers so they may be difficult to graph. 
+* Limitations: I am limited because I only have data that starts in 2023, and I don’t have any temperature data that goes along with it. 
+Conclusion: 
+* Summary of the Proposal: I am interested in cloud patterns starting in 2023, and how they are affected by latitude and longitude. I want to see if there are any changes in cloud patterns as time has passed, and if I can answer questions about why there are certain cloud patterns at different locations. I want to know if I can use past data to predict future cloud patterns. 
+* Call to Action: I think I am going to have a lot of fun completing this project because I will get to answer all my questions.
