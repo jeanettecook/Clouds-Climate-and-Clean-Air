@@ -1,0 +1,635 @@
+---
+title: "Clouds, Climate, and Clean Air: Patterns in our Atmosphere"
+author: "Jeanette Cook"
+date: "2025-10-15"
+output: html_document
+
+## Clouds, Climate, and Clean Air: Patterns in our Atmosphere
+
+## Libraries
+```{r}
+install.packages("reshape2", repos = "https://cran.rstudio.com/")
+
+```
+
+```{r}
+library(tidyverse)
+library(dplyr)
+library(reshape2)
+library(ggplot2)
+```
+## Introduction
+This project conducted an Exploratory Data Analysis on a global weather data set. There was a focus specifically on the interdependencies between atmospheric variables, focusing on clouds, air quality, and temperature distribution. Initial data cleaning focused on cleaning the numerical pollution columns by removing placeholder values that were values that are 0 or less. The goal was to ensure the integrity of the air quality data, and make sure that the -9999 values did not skew the averages. 
+
+The analysis confirmed several foundational atmospheric principles. For example, the relationship between high cloud cover and high humidity which aligns with the condensation mechanics. Also, there is a negative correlation between cloud cover and UV index, which shows the sun-blocking effect of clouds. Lastly, the cloud cover distribution map is consistent with the Inter tropical Convergence Zone. 
+
+## Gathering my dataset 
+```{r}
+Weather_data <- read.csv("GlobalWeatherRepository.csv")
+```
+
+
+## Data: Variable Dictionary: 
+1. **air_quality_Carbon_Monoxide**- This is the amount of Carbon Monoxide that is in the air at the specific location. It is numerical data.
+
+2.**air_quality_us-epa-index**- This is the number on a scale that the EPA created that shows the air quality. 1 means good, 5 means bad. Normally it corresponds to a color, however this data is numerical.
+
+3.**air_quality_gb-defra-index**- This is the daily air quality index. This is 1-10, based on the amount of air pollution there is. 1 is low levels of pollution, while 10 is is very high. This is numerical data.
+
+4.**air_quality_Nitrogen_dioxide**- This is the amount of Nitrogen dioxide that is in the air at the specific location. It is numerical data
+  
+5.**air_quality_PM2.5**- This is the amount of fine particulate matter that is 2.5 micrometers or less in the air of the specific location. It is numerical data.
+
+6.**air_quality_PM10**- This is the amount of fine particulate matter that is 10 micrometers or less in the air of the specific location. It is numerical data.
+
+7.**air_quality_Sulphur_dioxide**-This is the amount of Sulphur dioxide that is in the air at the specific location. It is numerical data. 
+
+8.**cloud**- This is the percentage of cloud cover in the sky. It is numerical data
+
+9.**country**- The name of the country. This variable is categorical.
+
+10.**condition_text** - This is the cloud condition. This is categorical data. 
+
+11.**feels_like_celcius**- This is the feel like temperature in Celcius. It is numerical data.
+
+12.**feels_like_fahrenheit**- This is the feel like temperature in Fahrenheit. It is numerical data.
+
+13. **gust_kph**- This is the wind gust speed in kilometers per hour. It is numerical data. 
+
+
+14.**gust_mph**- This is the wind gust speed in miles per hour. It is numerical data.
+
+
+15. **humidity**- This is the humidity of the location. It is numerical data. 
+
+
+16.**last_updated**- This is the time that the data was last updated. It is numerical.
+
+
+17.**latitude**- This is a measurement of a location's distance north or south from the equator. This is numerical data that is measured in degrees. 
+
+
+18.**location name** - The name of the location in that country. For example, in the United States the location name is Washington Park. This variable is categorical.
+
+19.**longitude**- This is the distance that a location is east or west of the Prime Meridian which is a line that runs through Greenwich, England. This is numerical data that is measured in degrees.  
+
+20.**moon_illumination**- This is how much the moon was illuminated. It is numerical data.
+
+21.**moonphase**- This is the the phase of the moon. It is categorical data.
+
+22.**moonrise**- This is the time that the moon came up. It is numerical data.
+
+23.**moonset**- This is the time that the moon set. It is numerical data.
+
+24.**sunrise**- This is the time of the sunrise. It is numerical data.
+
+25.**sunset**- This is the time of the sunset. It is numerical data.
+
+26.**precip_in** - This is the precipitation of the location in inches. This is numerical data.
+
+27.**pressure_mb**- This is the atmospheric pressure of the location measured in millibars. It is numerical data.
+
+28.**precip_mm** - This is the precipitation of the location in millimeters. This variable is numerical.
+
+29.**temperature_celsius**- This is the temperature of the location in Celsius. This is numerical data. 
+
+30. **temperature_fahrenheit**- This is the temperature of the location in Fahrenheit. This is numerical data.
+
+31.**timezone** - This is the timezone that each location is located in. This is categorical data.
+
+32.**uv_index**- This is the UV index of the location. It is numerical data.
+
+33.**visibility_km**- This is the visibility of the location in kilometers. It is numerical data.
+
+34.**visibility_miles**- This is the visibility of the location in miles. It is numerical data. 
+
+35.**wind_degree**- This is the angle that the wind was blowing in degrees. This is numerical data.
+
+36.**wind_direction**- This is the direction that the wind was blowing, it is in compass directions: north, south, east, west. It is categorical data.
+
+37.**wind_kph**- This is the wind speed in kilometers per hour. This is numerical data.
+
+38.**wind_mph**- This is the wind speed in miles per hour. This is numerical data.
+
+## Summary
+```{r}
+summary(Weather_data)
+```
+
+The data set has 98,019 observations. The latitude and longitude cover the entire Earth. The temperature ranges from -24.9 degrees Celsius and 49.2 degrees Celsius. The cloud ranges from 0% and 100% with a mean of 39.5% and a median of 26%. This indicates a skew towards clearer skies. The humidity ranges from 2% and 100% with a median of 69% and a third quartile of 84%. The moon illumination ranges from 0% to 100% with a mean/median around 50%. This continuous numerical variable is good for analyzing the correlation between the moon illumination and cloud cover. The UV index ranges from 0 to 16.3 with a mean of 3.877. 
+
+The placeholder values in the EPA(air quality data), such as the -9999 values were filtered out because they did not make sense in the context of air quality which was on a scale of 1-5. Any value that was less than 0 was replaced with NA so that it did not interfere with the averages. A new summary of the EPA data was made after the cleaning was done.
+
+The weather condition data set was sorted by weather condition, but there were many unique weather conditions that happened less than 1% of the time that were making the graph unreadable. This was helped by filtering for the data that happened less than 1% of the time and putting it in the rare cases bin. This made the graph more readable.
+
+## Purpose
+The main goal of this project is to analyze global weather data and to identify and quantify the factors that affect cloud cover, air quality, and temperature distribution. Specifically, this analysis seeks to explore the correlations between atmospheric variables like cloudiness, humidity, pollutants, and moon illumination across the world.
+
+This project seeks to answer the following questions:
+
+What is the temperature distribution in a few selected countries of interest? How is cloud coverage distributed globally? What is the relationship between temperature and cloud coverage? What is the relationship between cloudiness and UV index? What is the frequency of different weather conditions?
+What is the relationship between cloud cover and the amount of air pollutants? What is the relationship between location and amount of air pollutants in a few selected countries worldwide? How does the percentage of global cloud cover change with increasing distance from the equator? What is the relationship between high humidity and the probability of cloud cover? What is the correlation between temperature in Fahrenheit, precipitation in millimeters, wind in kilometers per hour, and humidity?
+
+
+## Changing the air quality minima
+```{r}
+
+aq_columns <- c(
+  "air_quality_Carbon_Monoxide", 
+  "air_quality_Sulphur_dioxide",
+  "air_quality_PM2.5", # PM2.5 and PM10 minimums look valid, but it's safer to check.
+  "air_quality_PM10"
+)
+
+
+Weather_data_Cleaned <- Weather_data %>%
+  
+  dplyr::mutate(
+    dplyr::across(
+      .cols = all_of(aq_columns),
+      .fns = ~ifelse(.x <= 0, NA_real_, .x) 
+    )
+  ) %>%
+  
+  dplyr::filter(
+    !is.na(air_quality_Carbon_Monoxide) & 
+    !is.na(air_quality_Sulphur_dioxide)
+  )
+
+
+summary(Weather_data_Cleaned$air_quality_Carbon_Monoxide)
+summary(Weather_data_Cleaned$air_quality_Sulphur_dioxide)
+
+
+```
+
+## Key Details for changing air quality minima. 
+Using data with values such as -9999 completely ruin the averages and correlations for air quality, so mutate and filter were used to clean the data.
+
+## Exploratory Data Analysis
+
+## Graph 1: Temperature Distribution in Selected Countries
+```{r}
+countries_of_interest <- c("United States of America", "United Kingdom", "India", "Australia")
+
+
+filtered_weather <- Weather_data%>%
+  filter(country %in% countries_of_interest) %>%
+  mutate(country = forcats::fct_reorder(country, temperature_celsius, .fun = median, .desc = TRUE))
+
+ggplot(filtered_weather, aes(x = country, y = temperature_celsius)) + 
+  geom_boxplot(fill = "lightblue", color = "blue", outlier.alpha = 0.3) + 
+  labs(title = "Temperature Distribution in Selected Countries",
+       x = "Country",
+       y = expression("Temperature ("*~degree*C*")")) + 
+  theme_minimal() +
+  
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust = 1))
+```
+
+## Key Details of Graph 1:
+The goal for this graph was to compare and contrast the temperature in Celsius  with four countries. The focus was on the temperature distribution in the countries India, United Kingdom, Australia, and the United States of America. India is the warmest country, while the United Kingdom is the coolest. The United States and Australia have the tallest box plots, which is because both countries cover vast geographical range of diverse climates. 
+
+
+
+## Graph 2: Global Cloud Distribution
+```{r}
+
+cloud_geo_plot <- Weather_data %>%
+  ggplot(aes(x = longitude, y = latitude, color = cloud)) +
+  geom_point(alpha = 0.6, size = 1) + 
+  scale_color_viridis_c(name = "Cloud Cover (%)") + 
+  labs(
+    title = "Geographic Distribution of Cloud Cover",
+    x = "Longitude",
+    y = "Latitude"
+  ) +
+  theme_minimal() +
+  coord_equal() 
+
+
+ggsave("cloud_geographic_distribution_r.png", plot = cloud_geo_plot, width = 10, height = 6)
+
+cloud_geo_plot
+```
+
+## Key Details for Graph 2:
+With this graph, the goal was to look at the geographic distribution of cloud cover, and find the areas that have high observation density. It can be seen from the graph the clouds end up making a map of the world, but that is because there is no cloud data where there is no land. There is no cloud data where there is no land because there is only data for cities on land.
+
+With this graph it can be seen that there is a band of of high cloud cover near the equator, which known as the Intertropical Convergence Zone. The clouds are dense here due to high solar radiation and moisture levels. 
+
+## Graph 3: Correlation Heat Map between Temperature, Precipitaion, Wind and Humidity
+```{r}
+
+numeric_data <- Weather_data %>%
+  select(temperature_fahrenheit, precip_mm, wind_kph, humidity)
+
+
+correlation_matrix <- cor(numeric_data, use = "pairwise.complete.obs")
+
+
+melted_corr <- melt(correlation_matrix)
+
+
+ggplot(melted_corr, aes(x = Var1, y = Var2, fill = value)) +
+  geom_tile() +
+  scale_fill_gradient2(low = "blue", high = "red", mid = "white",
+                       midpoint = 0, limit = c(-1,1), name = "Correlation") +
+  theme_minimal() +
+  labs(title = "Correlation Heatmap") +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+
+```
+
+## Key Details of Graph 3:
+This graph shows the correlation of each variable to each other. The diagonal line of red squares is where each variable is compared to itself so it is perfectly correlated. Also the graph is symmetrical because it compares each thing twice. There is a strong negative correlation between temperature and humidity. There is also a weak correlation between temperature and precipitation. Lastly, there is a slightly positive relationship between wind and precipitation.
+
+
+
+## Graph 4: Cloud Cover vs. UV Index in Selected Countries
+```{r}
+
+countries_to_filter_fixed <- c(
+    "India",
+    "Japan",  # Assuming 'Tokyo' is in Japan
+    "United States", 
+    "Brazil"         
+)
+
+
+filtered_data_uv <- Weather_data %>%
+  dplyr::filter(country %in% countries_to_filter_fixed)
+
+
+ggplot(filtered_data_uv, aes(x = cloud, y = uv_index)) +
+  
+  
+  geom_point(aes(color = temperature_celsius), alpha = 0.7) + 
+  
+  
+  scale_color_viridis_c(option = "magma") + 
+  
+  
+  geom_smooth(method = "lm", color = "blue", se = FALSE, linewidth = 1.2) + 
+  
+  labs(
+    title = "Cloud Cover vs. UV Index in Selected Global Countries",
+    x = "Cloud Cover Percentage (%)", 
+    y = "UV Index",
+    color = "Temp (°C)"
+  ) +
+  theme_minimal()
+```
+
+
+```{r}
+
+uv_cloud_model <- lm(uv_index ~ cloud, data = filtered_data_uv)
+
+
+coef(uv_cloud_model)
+
+summary(uv_cloud_model)
+
+```
+
+## Key Details for Graph 4: 
+The linear regression line shows the correlation between the two variables. The line is -0.00975679x + 2.75042134. The negative slope represents negative linear correlation. The y-intercept is the amount of UV index there is when there is no cloud cover. There is a negative correlation between cloud cover and UV index, because clouds block solar radiation. Based on the visual evidence of the graph, the predictions can not be trusted. Also, the adjusted R^2 value is 0.009973, which means that there is a very weak correlation between the two variables. While the line correctly shows a general trend, it is not a reliable tool for predicting the exact UV index on a specific day just by knowing the cloud cover.
+
+There is point clustering near the low UV end of the spectrum with high cloud cover, and there is point clustering near the the high end UV end for low cloud cover.
+There is a temperature aspect to this graph, where the highest UV reading occur there are high temperatures so two things are positively correlated.
+
+
+## Graph 5: Air Quality Index vs PM2.5 Concentration
+```{r}
+
+ggplot(Weather_data_Cleaned, aes(x = factor(air_quality_us.epa.index), y = air_quality_PM2.5)) +
+  geom_boxplot(
+    aes(fill = factor(air_quality_us.epa.index)),
+    outlier.shape = 1, 
+    alpha = 0.7
+  ) +
+  labs(
+    title = "PM2.5 Concentration Across US EPA Air Quality Index Levels",
+    x = "US EPA Air Quality Index (1 to 6)",
+    y = expression("PM2.5 Concentration ("*mu*"g/m"^{3}*")"), 
+    fill = "EPA Index"
+  ) +
+  scale_fill_brewer(palette = "YlOrRd") + 
+  theme_bw() +
+  theme(legend.position = "none")
+```
+
+## Key Details for Graph 5:
+The EPA Air Quality Index is measured on a scale from 1 to 6, with 1 being good and 6 being hazardous. PM2.5 is fine particulate matter which consists of particles that are 2.5 micrometers or smaller. Sources of PM2.5 are vehicle emissions, industrial processes, power plants, wildfires, and dust storms. This graph shows the relationship between PM2.5 and the Air Quality Index. This graph shows that as the EPA Index number increases, the median concentration of PM2.5 also increases. This successfully links the a numerical, objective measurement with the human-defined classification of the EPA Air Quality Index.
+
+## Graph 6: Frequency Graph of Different Weather Conditions
+```{r}
+
+threshold <- 0.01 * nrow(Weather_data) 
+
+Condition_Lookup <- Weather_data %>%
+  
+  dplyr::mutate(condition_text_lower = stringr::str_to_lower(condition_text)) %>% 
+  
+  
+  dplyr::mutate(
+    condition_text_lower = dplyr::if_else(
+      condition_text_lower == "light rain shower", 
+      "light rain", 
+      condition_text_lower
+    )
+  ) %>%
+  
+
+  dplyr::count(condition_text_lower, sort = TRUE, name = "n") %>%
+  
+
+  dplyr::mutate(
+    condition_text_clean = ifelse(n < threshold, "Other/Rare Conditions", condition_text_lower)
+  ) %>%
+
+  dplyr::select(condition_text_lower, condition_text_clean) %>%
+  
+ 
+  dplyr::distinct() 
+
+
+Weather_data_Cleaned <- Weather_data %>%
+  dplyr::mutate(condition_text_lower = stringr::str_to_lower(condition_text)) %>%
+  
+
+  dplyr::mutate(
+    condition_text_lower = dplyr::if_else(
+      condition_text_lower == "light rain shower", 
+      "light rain", 
+      condition_text_lower
+    )
+  ) %>%
+  
+
+  dplyr::left_join(Condition_Lookup, by = "condition_text_lower") %>%
+  
+ 
+  dplyr::select(-condition_text_lower)
+
+
+
+ggplot(Weather_data_Cleaned, aes(x = condition_text_clean)) +
+  geom_bar(fill = "#2E7D32") + 
+  labs(
+    title = "Frequency of Weather Conditions",
+    x = "Weather Condition",
+    y = "Count of Observations"
+  ) +
+
+  coord_flip() + 
+  theme_minimal()
+```
+
+## Key Details for Graph 6: 
+This graph has different weather conditions that were categorized because there were many conditions that occurred less than 1% of the time so they were classified as rare values. I then grouped all the conditions in the graph above. By grouping the rare conditions, the visualization is clean and focused. 
+
+From the graph you can see that partly cloudy has the most observations, while mist has the lowest count of observations. One reason that partly cloudy is the most prevelant is because it covers a wide range of conditions. Partly cloudy encompasses skies that are between 1/8th and 5/8ths covered by clouds which is a broad range. In contrast clear means that 0/8th is covered by clouds. Also, the weather is constantly changing and clouds are forming and dissipating. A state of partial cloudiness is a common transitional phase between a clear and overcast sky. Mist is the lowest reported weather condition because mist forms when air is cooled to its dew point which causes water to condense and this requires a combination of factors that are often limited to short periods and specific locations. For mist to form the air must be 100% saturated with water vapor, the air must be cool so that the ground can cool after sunset, and there must be a low wind speed to mix the boundary layer of air that lifts the condensed water droplets and prevents them from concentrating near the ground.
+
+## Graph 7: Cloud Patterns vs. Weather Conditions
+```{r}
+Cloud_Condition_Comparison <- Weather_data_Cleaned %>%
+  
+  dplyr::filter(condition_text_clean != "Other/Rare Conditions") %>%
+  
+  dplyr::mutate(
+    condition_text_clean = forcats::fct_reorder(condition_text_clean, cloud, .fun = median)
+  )
+
+ggplot(Cloud_Condition_Comparison, aes(x = condition_text_clean, y = cloud)) +
+  geom_boxplot(
+    aes(fill = condition_text_clean), 
+    outlier.alpha = 0.5
+  ) +
+  labs(
+    title = "Cloud Cover Distribution by Categorical Weather Condition",
+    x = "Weather Condition (Sorted by Median Cloud Cover)",
+    y = "Cloud Cover Percentage (%)"
+  ) +
+  scale_fill_brewer(palette = "Paired") +
+  theme_minimal() +
+  theme(
+    legend.position = "none",
+    axis.text.x = element_text(angle = 45, hjust = 1, face = "bold")
+  )
+```
+
+## Key Details for Graph 7: 
+After looking at the bar graph for the different weather conditions, the goal was to see how they compared to the cloud pattern data. The box plot for clear is clustered near the zero percent and the box plot for overcast is clustered near the hundred percent. The partly cloudy data is between thirty percent and seventy percent. 
+Overall, this graph confirms that the categorical data aligns with the numerical cloud coverage percentage.
+
+
+There are some outliers on this graph, like on the light rain, rain nearby, and overcast. This could be due to errors made by human observers. Also, there could be a time lag in the measurement scale.
+
+## Graph 8: Carbon Monoxide level vs Selected Countries
+```{r}
+Weather_data %>%
+  filter(country %in% c("United States of America", "India", "Australia")) %>% 
+  group_by(country) %>%
+  summarise(
+    Carbon_Monoxide = mean(air_quality_Carbon_Monoxide, na.rm = TRUE)
+  ) %>%
+  pivot_longer(cols = -country, names_to = "Pollutant", values_to = "Concentration") %>%
+  ggplot(aes(x = country, y = Concentration, fill = Pollutant)) +
+  geom_col(position = "dodge") +
+  labs(
+    title = "Average Concentration of Air Pollutants in Selected Countries",
+    x = "Country",
+    y = "Average Concentration"
+  ) +
+  theme_minimal()
+
+```
+
+## Key Details for Graph 8: 
+The goal of this graph was to compare the levels of the air pollutant Carbon monoxide in the three countries: Australia, India, and the United States of America. It can be seen from the graph that India has the highest level of Carbon monoxide. This means that the air quality is negatively affected by the amount of pollutants. Air quality has a direct impact on health, as direct exposure to pollutants can cause respiratory issues, cardivascular diseases and nuerological effects. Air pollution also has an environmental impact as it can famage plants, crops, forests and aquatic ecosystems. Air pollutants also contribute ot climate change, so knowing which countries have the most air pollution can show which countries need to make changes so they do not continue to pollute the air. Lastly, Carbon monoxide can have an indirect affect on clouds by influencing atmospheric chemistry, but it has no direct physical effect on cloud formation. In addition, pollutants that cause Carbon monoxide emissions can lead to cloudiness.
+
+## Graph 9: Nitrogen Dioxide Levels  
+```{r}
+Weather_data %>%
+  filter(country %in% c("United States of America", "India", "Australia")) %>%
+  group_by(country) %>%
+  summarise(
+    Nitrogen_dioxide = mean(air_quality_Nitrogen_dioxide, na.rm = TRUE)
+  ) %>%
+  pivot_longer(cols = -country, names_to = "Pollutant", values_to = "Concentration") %>%
+  ggplot(aes(x = country, y = Concentration, fill = Pollutant)) +
+  geom_col(position = "dodge") +
+  labs(
+    title = "Average Concentration of Air Pollutants in Selected Countries",
+    x = "Country",
+    y = "Average Concentration"
+  ) +
+  theme_minimal()
+
+```
+
+## Key Details for Graph 9:
+This graph shows the amount of Nitrogen dioxide in the air in the same three countries: Australia, India, and the United States of America.Again, India has the highest level of Nitrogen dioxide in the air. As stated above, poor air quality leads to poor health effects on the people that breathe it. Also, poor air quality has a negative effect on the enviroment. Also, nitrogen dioxide has an effect on clouds by affecting their chemical composition and radiative prpoperties. Nitrogen dioxide is a precursor ot nitrate particals which are a major component of atmospheric aerosol whih as a cloud condensation nuclei(CCN). An increase in CCN can lead to a formation of more numerous, but smaller cloud droplet which affects the cloud's properties and potential to produce rain. Nitrogen dioxide is also a precursor for acid rain, as Nitrigen dioxide reacts with water to form nitric acid. 
+
+## Graph 10: Sulfur Dioxide vs Selected Countries
+```{r}
+Weather_data %>%
+  filter(country %in% c("United States of America", "India", "Australia")) %>% 
+  group_by(country) %>%
+  summarise(
+    Sulfur_dioxide = mean(air_quality_Sulphur_dioxide, na.rm = TRUE)
+  ) %>%
+  pivot_longer(cols = -country, names_to = "Pollutant", values_to = "Concentration") %>%
+  ggplot(aes(x = country, y = Concentration, fill = Pollutant)) +
+  geom_col(position = "dodge") +
+  labs(
+    title = "Average Concentration of Air Pollutants in Selected Countries",
+    x = "Country",
+    y = "Average Concentration"
+  ) +
+  theme_minimal()
+```
+
+## Key Details for Graph 10
+This graph shows the amount of Sulfur dioxide in the three countries: Australia, India, and the United States. In addition to Sulfur dioxide leading to health risks, it also affects clouds. Sulfur dioxide affects clouds by transforming into sulfate aerosol that act as cloud condensation nuclei(CCN). This process modifies the couds properties by making it brighter and more reflective which has a cooling effect overall on the planet.
+
+
+
+## Graph 11: Average EPA vs Selected Countries
+```{r}
+Weather_data %>%
+  filter(country %in% c("United States of America", "India", "Australia")) %>%
+  filter(!is.na(air_quality_us.epa.index)) %>%
+  group_by(country) %>%
+  summarise(mean_air_quality = mean(air_quality_us.epa.index, na.rm = TRUE)) %>%
+  ggplot(aes(x = reorder(country, mean_air_quality), y = mean_air_quality, fill = country)) +
+  geom_col() +
+  coord_flip() +
+  labs(
+    title = "Average EPA Air Quality Index in Selected Countries",
+    x = "Country",
+    y = "Mean EPA Air Quality Index (1 = Good, 5 = Very Bad)"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+```
+
+  
+## Key Detials for Graph 11:
+This graph is consistent with my three graphs above and it shows that India has the worst air quality out of my three selected countries.
+
+## Graph 12: Cloud Cover Distribution by Country
+```{r}
+Weather_data %>%
+  filter(country %in% c("United States of America", "India", "Australia")) %>%
+  ggplot(aes(x = country, y = cloud, fill = country)) +
+  geom_boxplot(alpha = 0.7, outlier.alpha = 0.3) +
+  labs(
+    title = "Cloud Cover Distribution by Country",
+    x = "Country",
+    y = "Cloud Cover (%)"
+  ) +
+  theme_minimal() +
+  theme(legend.position = "none")
+
+```
+
+## Key Details for Graph 12:
+This box plot shows the cloud cover distributions for three selected countries. The United States box plot shows that it is heavily skewed towards high cloud cover. The median for United States is located at approximately 25% cloud cover. This means that half of all observations in the US recorded a cloud cover percentage of 25% or less.
+India's median is the highest of the three countries, and it has a narrow distribution. Australia has the lowest median, and the cloud cover is highly variable. 
+
+## Graph 13: Cloud Cover and Fine Particulate Matter
+```{r}
+
+ggplot(Weather_data_Cleaned, aes(x = cloud, y = air_quality_PM2.5)) +
+  geom_point(aes(color = humidity), alpha = 0.6) +
+  geom_smooth(method = "loess", color = "red", se = TRUE) + 
+  scale_color_viridis_c(option = "magma") +
+  labs(
+    title = "Relationship Between Cloud Cover and Fine Particulate Matter (PM2.5)",
+    x = "Cloud Cover (%)",
+    y = "PM2.5 Concentration (μg/m³)",
+    color = "Humidity (%)"
+  ) +
+  theme_bw()
+```
+
+  
+## Key Details from Graph 13:
+The data in this graph suggests that the highest fine particulate matter pollution occurs under conditions of extremely low humidity, regardless of cloud cover. This makes sense because, low humidity corresponds to stable atmospheric conditions that can trap pollutants near the surface.
+ 
+
+## Graph 14: Distribution of Low vs High Humidity with Cloud Cover
+```{r}
+
+
+Weather_data$High_Cloud_Condition <- factor(
+ 
+  ifelse(Weather_data$cloud >= 75, "High Cloud Cover (>= 75%)", "Low/Medium Cloud Cover (< 75%)"),
+  levels = c("Low/Medium Cloud Cover (< 75%)", "High Cloud Cover (>= 75%)")
+)
+
+
+ggplot(Weather_data, aes(x = humidity, fill = High_Cloud_Condition)) +
+
+  geom_density(alpha = 0.6, adjust = 1.5) +
+  
+  geom_vline(
+    data = Weather_data %>% 
+           dplyr::group_by(High_Cloud_Condition) %>% 
+           dplyr::summarise(med_humidity = median(humidity, na.rm = TRUE), .groups = 'drop'),
+    aes(xintercept = med_humidity, color = High_Cloud_Condition),
+    linetype = "dashed",
+    linewidth = 1
+  ) +
+  labs(
+    title = "Humidity Distribution: Low vs. High Cloud Cover",
+    x = "Humidity (%)",
+    y = "Density",
+    fill = "Cloud Condition",
+    color = "Median Humidity"
+  ) +
+  scale_fill_manual(values = c("Low/Medium Cloud Cover (< 75%)" = "#4B8BBE", "High Cloud Cover (>= 75%)" = "#FF7F50")) +
+  scale_color_manual(values = c("Low/Medium Cloud Cover (< 75%)" = "#4B8BBE", "High Cloud Cover (>= 75%)" = "#FF7F50")) +
+  theme_minimal()
+```
+
+  
+## Key Details for Graph 14:
+From this graph it can be seen that high cloud cover is associated with high humidity. The median humidity for high cloud cover is 80% and the most frequent is 90-95%. Clouds form due to condensation, so it makes sense that there is high humidity.
+
+The low to medium cloud cover happens over a wider range of humidity levels.
+
+
+## Results:
+The focus of the analysis was to uncover the patterns and correlations between the variables.
+The data required pre-processing steps particularly for the numerical columns related to air quality and wind pressure where the placeholder values(like -9999) and physically impossible extremes exist. There are no missing values. To establish relationships between the variables, correlation analysis was performed, utilizing heatmaps to visualize the degree of linear association between variables like temperature and humidity. Scatterplots were used to confirm specific functional relationships, such as the negative correlation between cloud cover and UV index. Lastly, there was conditional grouping and comparative analysis was used with box plots to contrast key subsets of data like pollutant levels across the United States, India, and Australia. 
+
+Overall findings of the data include a strong positive correlation between high cloud cover and high humidity. There was also a slight negative correlation between cloud cover and temperature.The cross-national comparison of the United States, Australia, and India show that India has the highest average concentrations of major air pollutants including Carbon Monoxide, Nitrogen Dioxide, and Sulfur Dioxide. While each of the air pollutants have negative effects on health and the environment, they each uniquely affect clouds. 
+
+The weather condition frequency graph showed that the most frequently recorded weather condition was "partly cloudy". The next most common conditions were "clear" and "cloudy". This incicates that the extremes of the cloud cover are less common the intermediate state of partial cloud cover.
+
+
+
+## Conclusions
+This data analysis quantified the relationship between atmospheric variables providing clear, data-driven insights into both the global atmospheric mechanics and goeographical pollution disparities. The study provided insight into the corrleation between cloud cover and humidity, the distribution of air pollution, and the correlation between cloud cover and UV index.  
+
+One limitation of the study was that the data was based on aggregated, cross-sectional observations which means that it did not account fo temporal variability. This prevents any definitive causal inferences regarding long-term climate change effects. The second limitation was that the analysis did not include an investigation into the extreme points, even though the outliers were noted. The extreme pollution outliers are linked to specific industrial centers, but the analysis does not isolate the precise source locations.
+
+Future work could focus on adding the dimension of time to the current findings. Future work should prioritize longitudinal analysis to track how air quality metrics and temperature extremes in high risk zones have evolved over time. 
+
+
+## References:
+[Basic Information on NO2](https://www.epa.gov/no2-pollution/basic-information-about-no2)
+
+[Carbon Monoxide](https://www.earthobservatory.nasa.gov/global-maps/MOP_CO_M)
+
+[Influence of Temperature and Relative Humidity 
+on PM2.5 Concentration on Delhi](https://pmc.ncbi.nlm.nih.gov/articles/PMC10176274/)
+
+[The Intertropical Convergence Zone](https://earthobservatory.nasa.gov/images/703/the-intertropical-convergence-zone)
+
+[World Weather Repository](https://www.kaggle.com/datasets/nelgiriyewithana/global-weather-repository)
